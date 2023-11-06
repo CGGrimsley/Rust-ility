@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
+from ttkthemes import ThemedTk
 import tkinter.messagebox as messagebox
+from PIL import Image, ImageTk
 
 # Dictionary to store the sulfur costs of items
 item_costs = {
@@ -94,21 +96,37 @@ def calculate_and_display_ingredients():
     ingredients_text.config(state=tk.DISABLED)
 
 # Create the main window
-root = tk.Tk()
+root = ThemedTk(theme="arc")
 root.title("Rust Sulfur Calculator")
+root.configure(bg="#000")
+
+style = ttk.Style()
+style.configure("TSpinbox", background="black", foreground="grey")
+style.configure("TText", background="black", foreground="grey")
+style.configure("Dark.TLabel", foreground="grey", background="black")
+style.configure("Dark.TButton", foreground="grey", background="black", padding=5)
+style.configure("TFrame", background="black")
+style.configure("TNotebook", background="grey")
+
+# Load and display the logo
+logo_image = Image.open("Rustilitylogo.png")
+logo_photo = ImageTk.PhotoImage(logo_image)
+
+logo_label = ttk.Label(root, image=logo_photo, style="Dark.TLabel")
+
+root.iconphoto(True, logo_photo)
 
 # Create a tabbed notebook
-notebook = ttk.Notebook(root)
-notebook.pack(padx=10, pady=10)
+notebook = ttk.Notebook(root, style="TNotebook")
+notebook.grid(row=2, column=0, padx=10, pady=10)
 
 # Create a tab for sulfur allocation
-allocation_tab = ttk.Frame(notebook)
+allocation_tab = ttk.Frame(notebook, style="TFrame")
 notebook.add(allocation_tab, text="Sulfur Allocation")
 
-# Create a tab for item ingredients
-ingredients_tab = ttk.Frame(notebook)
-notebook.add(ingredients_tab, text="Item Ingredients")
-notebook.select(ingredients_tab)
+# Create a tab for item ingredients (Raid Cost)
+ingredients_tab = ttk.Frame(notebook, style="TFrame")
+notebook.add(ingredients_tab, text="Raid Cost")
 
 # Raw sulfur entry
 raw_sulfur_label = ttk.Label(allocation_tab, text="Enter Raw Sulfur:")
@@ -130,15 +148,15 @@ spinbox_vars = []
 max_buttons = []
 
 for i, item in enumerate(item_costs.keys()):
-    label = ttk.Label(allocation_tab, text=f"{item}:")
+    label = ttk.Label(allocation_tab, text=f"{item}:", style="TLabel")
     label.grid(row=i + 2, column=0, padx=5, pady=5)
     
     spinbox_var = tk.StringVar()
     spinbox_var.set("0")
-    spinbox = ttk.Spinbox(allocation_tab, from_=0, to=1000, textvariable=spinbox_var, command=lambda item=item, spinbox_var=spinbox_var: update_sulfur_allocation_labels(item, spinbox_var))
+    spinbox = ttk.Spinbox(allocation_tab, from_=0, to=1000, textvariable=spinbox_var, command=lambda item=item, spinbox_var=spinbox_var: update_sulfur_allocation_labels(item, spinbox_var), style="TSpinbox")  # Use the configured style for spinboxes
     spinbox.grid(row=i + 2, column=1, padx=5, pady=5)
     
-    max_button = ttk.Button(allocation_tab, text="Max", command=lambda item=item: allocate_max(item))
+    max_button = ttk.Button(allocation_tab, text="Max", command=lambda item=item: allocate_max(item), style="TButton")
     max_button.grid(row=i + 2, column=2, padx=5, pady=5)
     
     spinboxes.append(spinbox)
@@ -148,6 +166,9 @@ for i, item in enumerate(item_costs.keys()):
 # Text widget to display ingredients
 ingredients_text = tk.Text(ingredients_tab, wrap=tk.WORD, state=tk.DISABLED)
 ingredients_text.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+
+# Apply custom styles for the text widget
+ingredients_text.configure(bg="#333", fg="white", insertbackground="white")
 
 # Run the GUI
 root.mainloop()

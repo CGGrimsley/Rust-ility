@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
-# Dictionary to store construction items and their required destructive items
 items_data = {
     "Wood Door": {"Destructive Items": {"Rocket": 0, "Explosive Ammo": 0, "Molotov": 2}},
+    "Wood Door (Eoka)": {"Destructive Items": {"Rocket": 0, "Explosive Ammo": 0, "Molotov": 0, "Handmade shells": 45}},
     "Ladder Hatch": {"Destructive Items": {"Rocket": 1, "Explosive Ammo": 8, "Molotov": 0}},
     "Sheet Metal Door": {"Destructive Items": {"Rocket": 1, "Explosive Ammo": 8, "Molotov": 0}},
     "Garage Door": {"Destructive Items": {"Rocket": 1, "Explosive Ammo": 0, "C4": 1}},
@@ -15,12 +15,11 @@ items_data = {
     "Wood High External": {"Destructive Items": {"Rocket": 0, "Explosive Ammo": 0, "Incendiary Rocket": 1}},
     "Stone High External": {"Destructive Items": {"Rocket": 4, "Explosive Ammo": 0, "Incendiary Rocket": 0}},
     "Auto-Turret": {"Destructive Items": {"Rocket": 0, "Explosive Ammo": 0, "High Velocity Rocket": 3}},
-    # Add more items and their data as needed
 }
 
-# Function to update the Raid Cost
-def update_shopping_list():
-    shopping_list.delete(0, tk.END)  # Clear the Raid Cost
+# update raid cost
+def update_raid_cost():
+    raid_cost.delete(0, tk.END)  # Clear the Raid Cost
 
     stacked_items = {}  # Dictionary to stack D_Items for all C_Items
     for item, spinbox in spinboxes.items():
@@ -33,19 +32,16 @@ def update_shopping_list():
                 else:
                     stacked_items[destructive_item] = quantity * amount_needed
 
-    # Display the stacked D_Items in the shopping list
+    # Display the stacked D_Items in the raid cost
     for destructive_item, total_quantity in stacked_items.items():
-        shopping_list.insert(tk.END, f"{total_quantity} {destructive_item}")
+        raid_cost.insert(tk.END, f"{total_quantity} {destructive_item}")
 
-# Create the main window
 root = tk.Tk()
 root.title("Raid Cost Calculator")
 
-# Create a frame for the items grid
 items_frame = ttk.Frame(root)
 items_frame.grid(row=0, column=0, padx=10, pady=10)
 
-# Create labels, spinboxes, and +/- buttons for construction items
 spinboxes = {}
 row_counter = 0
 for item in items_data.keys():
@@ -58,19 +54,14 @@ for item in items_data.keys():
     spinboxes[item] = spinbox
     row_counter += 1
 
-# Create a frame for the Raid Cost
-shopping_frame = ttk.Frame(root)
-shopping_frame.grid(row=0, column=1, padx=10, pady=10)
+raidcost_frame = ttk.Frame(root)
+raidcost_frame.grid(row=0, column=1, padx=10, pady=10)
 
-# Create a label for the Raid Cost
-ttk.Label(shopping_frame, text="Raid Cost:").pack(padx=10, pady=10)
+ttk.Label(raidcost_frame, text="Raid Cost:").pack(padx=10, pady=10)
 
-# Create a listbox for the selected items
-shopping_list = tk.Listbox(shopping_frame, selectmode=tk.SINGLE)
-shopping_list.pack(padx=10, pady=10)
+raid_cost = tk.Listbox(raidcost_frame, selectmode=tk.SINGLE)
+raid_cost.pack(padx=10, pady=10)
 
-# Create a button to update the Raid Cost
-ttk.Button(shopping_frame, text="Update Raid Cost", command=update_shopping_list).pack(padx=10, pady=10)
+ttk.Button(raidcost_frame, text="Update Raid Cost", command=update_raid_cost).pack(padx=10, pady=10)
 
-# Run the GUI
 root.mainloop()
